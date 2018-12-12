@@ -160,6 +160,18 @@
     }
 }
 
+- (void)pluginInitialize
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(finishLaunching:) name:UIApplicationDidFinishLaunchingNotification object:nil];
+
+}
+
+- (void)finishLaunching:(NSNotification *)notification
+{
+    NSLog(@"finishLaunching called");
+    self.notificationMessage = notification.userInfo;
+}
+
 - (void)init:(CDVInvokedUrlCommand*)command;
 {
     NSMutableDictionary* options = [command.arguments objectAtIndex:0];

@@ -77,6 +77,11 @@ NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginA
     self.clobberedDelegate = center.delegate;
     center.delegate = self;
 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                         selector:@selector(pushPluginDidFinishLaunchingWithOptions:)
+                                             name:UIApplicationDidFinishLaunchingNotification
+                                           object:nil];
+
     [[NSNotificationCenter defaultCenter]addObserver:self
                                             selector:@selector(pushPluginOnApplicationDidBecomeActive:)
                                                 name:UIApplicationDidBecomeActiveNotification
@@ -170,10 +175,29 @@ NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginA
     }];
 }
 
+// This code will be called immediately after application:didFinishLaunchingWithOptions:. We need
+// to process notifications in cold-start situations
+- (void)pushPluginDidFinishLaunchingWithOptions:(NSNotification *)notification
+{
+    NSLog(@"Push Plugin - createNotificationChecker");
+    if (notification)
+    {
+        NSDictionary *launchOptions = [notification userInfo];
+        if (launchOptions) {
+            NSLog(@"Push Plugin - coldstart");
+            self.launchNotification = [launchOptions objectForKey: @"UIApplicationLaunchOptionsRemoteNotificationKey"];
+            self.coldstart = [NSNumber numberWithBool:YES];
+        } else {
+            NSLog(@"Push Plugin - not coldstart");
+            self.coldstart = [NSNumber numberWithBool:NO];
+        }
+    }
+}
+
 - (void)pushPluginOnApplicationDidBecomeActive:(NSNotification *)notification {
 
     NSLog(@"active");
-    
+
     NSString *firstLaunchKey = @"firstLaunchKey";
     NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:@"phonegap-plugin-push"];
     if (![defaults boolForKey:firstLaunchKey]) {
