@@ -1025,6 +1025,51 @@ You will get an inbox view so you can display multiple notifications in a single
 
 If you use `%n%` in the `summaryText` of the JSON coming down from FCM it will be replaced by the number of messages that are currently in the queue.
 
+By default, inbox notifications are ordered in descending order (last notification is displayed first). You can use the `inbox-order` parameter to change the order to ascending:
+
+```json
+{
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "My Title",
+    "message": "My first message",
+    "style": "inbox",
+    "inbox-order": "asc",
+    "summaryText": "There are %n% notifications"
+  }
+}
+```
+
+Here is an example using fcm-node that sends the above JSON:
+
+```javascript
+const FCM = require('fcm-node');
+// Replace these with your own values.
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
+const fcm = new FCM(apiKey);
+
+const message = {
+  to: deviceID,
+  data: {
+    title: 'My Title',
+    message: 'My second message',
+    style: 'inbox',
+    'inbox-order': 'asc',
+    summaryText: 'There are %n% notifications'
+  }
+};
+
+fcm.send(message, (err, response) => {
+  if (err) {
+    console.log(err);
+    console.log('Something has gone wrong!');
+  } else {
+    console.log('Successfully sent with response: ', response);
+  }
+});
+```
+
 ## Action Buttons
 
 Your notification can include a maximum of three action buttons. You register the event callback name for each of your actions, then when a user clicks on one of notification's buttons, the event corresponding to that button is fired and the listener you have registered is invoked. For instance, here is a setup with two actions `emailGuests` and `snooze`.
