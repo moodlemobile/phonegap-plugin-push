@@ -17,6 +17,7 @@
   - [Sound](#sound)
   - [Stacking](#stacking)
   - [Inbox Stacking](#inbox-stacking)
+  - [Messaging Stacking](#messaging-stacking)
   - [Action Buttons](#action-buttons)
     - [In Line Replies](#in-line-replies)
       - [Attributes](#attributes)
@@ -1069,6 +1070,156 @@ fcm.send(message, (err, response) => {
   }
 });
 ```
+
+## Messaging Stacking
+
+When developing messaging apps, a better alternative to stacking your notifications is to use the messaging style. The style is similar to the inbox stacking, but it also defines a sender name to be displayed next to each message. If the sender name is empty or not provided, no sender will be displayed (this is useful for private conversations). In this If you send the following JSON from FCM:
+
+```json
+{
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "John Smith",
+    "message": "My first message",
+    "style": "messaging",
+    "image": "https://randomuser.me/api/portraits/men/79.jpg",
+    "image-type": "circle"
+  }
+}
+```
+
+Here is an example using fcm-node that sends the above JSON:
+
+```javascript
+const FCM = require('fcm-node');
+// Replace these with your own values.
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
+const fcm = new FCM(apiKey);
+
+const message = {
+  to: deviceID,
+  data: {
+    title: 'John Smith',
+    message: 'My first message',
+    style: 'messaging',
+    image: 'https://randomuser.me/api/portraits/men/79.jpg',
+    'image-type': 'circle'
+  }
+};
+
+fcm.send(message, (err, response) => {
+  if (err) {
+    console.log(err);
+    console.log('Something has gone wrong!');
+  } else {
+    console.log('Successfully sent with response: ', response);
+  }
+});
+```
+
+It will produce a notification for an individual conversation:
+
+![2019-04-16 11 15 00](https://user-images.githubusercontent.com/7590321/56197310-d933da80-6038-11e9-887c-edeea100fcc5.png)
+
+The result looks similar to inbox stacking, with the difference that messages won't be truncated to a single line.
+
+If you follow it up with subsequent notifications like:
+
+```json
+{
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "John Smith",
+    "message": "My second message",
+    "style": "messaging",
+    "image": "https://randomuser.me/api/portraits/men/79.jpg",
+    "image-type": "circle"
+  }
+}
+```
+
+Here is an example using fcm-node that sends the above JSON:
+
+```javascript
+const FCM = require('fcm-node');
+// Replace these with your own values.
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
+const fcm = new FCM(apiKey);
+
+const message = {
+  to: deviceID,
+  data: {
+    title: 'John Smith',
+    message: 'My second message',
+    style: 'messaging',
+    image: 'https://randomuser.me/api/portraits/men/79.jpg',
+    'image-type': 'circle'
+  }
+};
+
+fcm.send(message, (err, response) => {
+  if (err) {
+    console.log(err);
+    console.log('Something has gone wrong!');
+  } else {
+    console.log('Successfully sent with response: ', response);
+  }
+});
+```
+
+The new message will be added to the current notification.
+
+![2019-04-16 11 15 00](https://user-images.githubusercontent.com/7590321/56197352-f1a3f500-6038-11e9-8616-77f499126914.png)
+
+If you also specify the name of the user that sent the message, it will be displayed next to the message. This is useful for group conversations. If you send the following JSON from FCM:
+
+```json
+{
+  "registration_ids": ["my device id"],
+  "data": {
+    "title": "My Group",
+    "message": "My first message",
+    "style": "messaging",
+    "sender": "John Smith"
+  }
+}
+```
+
+Here is an example using fcm-node that sends the above JSON:
+
+```javascript
+const FCM = require('fcm-node');
+// Replace these with your own values.
+const apiKey = 'replace with API key';
+const deviceID = 'my device id';
+const fcm = new FCM(apiKey);
+
+const message = {
+  to: deviceID,
+  data: {
+    title: 'My Group',
+    message: 'My first message',
+    style: 'messaging',
+    sender: 'John Smith'
+  }
+};
+
+fcm.send(message, (err, response) => {
+  if (err) {
+    console.log(err);
+    console.log('Something has gone wrong!');
+  } else {
+    console.log('Successfully sent with response: ', response);
+  }
+});
+```
+
+It will produce a notification for a group conversation:
+
+![2019-04-16 11 15 00](https://user-images.githubusercontent.com/7590321/56197398-08e2e280-6039-11e9-8119-7be98822bf44.png)
+
 
 ## Action Buttons
 
