@@ -870,13 +870,16 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
    * @return Notification The active notification, null if not found.
    */
   private Notification findActiveNotification(Integer notId) {
-    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-    StatusBarNotification[] notifications = mNotificationManager.getActiveNotifications();
+    // The getActiveNotifications method is only available from Android M.
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+      StatusBarNotification[] notifications = mNotificationManager.getActiveNotifications();
 
-    // Find the notification.
-    for (int i = 0; i < notifications.length; i++) {
-      if (notifications[i].getId() == notId) {
-        return notifications[i].getNotification();
+      // Find the notification.
+      for (int i = 0; i < notifications.length; i++) {
+        if (notifications[i].getId() == notId) {
+          return notifications[i].getNotification();
+        }
       }
     }
 
