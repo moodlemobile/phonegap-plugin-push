@@ -26,6 +26,8 @@ import android.os.Bundle;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationCompat.WearableExtender;
 import androidx.core.app.RemoteInput;
+import androidx.core.app.Person;
+import androidx.core.graphics.drawable.IconCompat;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -761,8 +763,15 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
         msgStyle = new NotificationCompat.MessagingStyle("");
       }
 
+      // Create the sender person.
+      Bitmap senderBitmap = getCircleBitmap(getBitmapFromURL(extras.getString(SENDER_IMAGE, "")));
+      Person sender = new Person.Builder()
+        .setName(extras.getString(SENDER, ""))
+        .setIcon(IconCompat.createWithBitmap(senderBitmap))
+        .build();
+
       // Add the new message to the style.
-      msgStyle.addMessage(message, System.currentTimeMillis(), extras.getString(SENDER, ""));
+      msgStyle.addMessage(message, System.currentTimeMillis(), sender);
 
        // Add the count of messages to the title if there is more than 1.
       Integer sizeList = msgStyle.getMessages().size();
