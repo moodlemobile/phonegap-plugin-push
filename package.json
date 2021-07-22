@@ -2,7 +2,7 @@
   "name": "@moodlehq/phonegap-plugin-push",
   "description": "Moodle's fork of Cordova Push Plugin.",
   "types": "./types/index.d.ts",
-  "version": "2.3.0-moodle.1",
+  "version": "2.2.3-moodle.1",
   "homepage": "http://github.com/moodlemobile/phonegap-plugin-push#readme",
   "repository": {
     "type": "git",

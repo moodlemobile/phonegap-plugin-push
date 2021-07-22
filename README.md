@@ -15,14 +15,12 @@ We created this fork because we needed to include the following modifications in
 | [#2743](https://github.com/phonegap/phonegap-plugin-push/pull/2743) | Support messaging style for notifications |
 | - | Fix push notifications in Android 4 and 5 |
 
-You can see all the changes here: [2.3.0...moodlemobile:v2.3.0-moodle.1](https://github.com/phonegap/phonegap-plugin-push/compare/2.3.0...moodlemobile:v2.3.0-moodle.1)
+You can see all the changes here: [2.2.3...moodlemobile:v2.2.3-moodle.1](https://github.com/phonegap/phonegap-plugin-push/compare/2.2.3...moodlemobile:v2.2.3-moodle.1)
 
 ## Installation
 
 You can install this package using the [original installation instructions](https://github.com/phonegap/phonegap-plugin-push/blob/master/docs/INSTALLATION.md), but installing this package instead:
 
 ```sh
-cordova plugin add @moodlehq/phonegap-plugin-push@2.3.0-moodle.1
+cordova plugin add @moodlehq/phonegap-plugin-push@2.2.3-moodle.1
 ```
-
-Depending on your cordova version, this command will add the plugin to your package.json as `phonegap-plugin-push` (for example, under `cordova.plugins`). In that case, you also need to add `@moodlehq/phonegap-plugin-push` so that the project restores the fork properly in other machines. Make sure that it is listed before the unscoped plugin name.
