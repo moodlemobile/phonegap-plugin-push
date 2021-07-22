@@ -1,7 +1,7 @@
 {
-  "name": "@havesource/cordova-plugin-push",
-  "version": "2.0.0",
-  "description": "Register and receive push notifications.",
+  "name": "@moodlehq/phonegap-plugin-push",
+  "version": "2.0.0-moodle.1",
+  "description": "Moodle's fork of Cordova Push Plugin.",
   "scripts": {
     "build": "babel src/js --out-dir www",
     "build:watch": "nodemon -w ./src/js -e js -x npm run build",
@@ -11,7 +11,10 @@
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
     "test": "npm run build && npm run lint && npm run jasmine"
   },
-  "repository": "github:havesource/cordova-plugin-push",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/moodlemobile/phonegap-plugin-push.git"
+  },
   "keywords": [
     "ecosystem:cordova",
     "cordova-ios",
@@ -21,8 +24,10 @@
   ],
   "author": "Erisu",
   "license": "MIT",
-  "bugs": "https://github.com/havesource/cordova-plugin-push/issues",
-  "homepage": "https://github.com/havesource/cordova-plugin-push#readme",
+  "bugs": {
+    "url": "https://github.com/moodlemobile/phonegap-plugin-push/issues"
+  },
+  "homepage": "http://github.com/moodlemobile/phonegap-plugin-push#readme",
   "devDependencies": {
     "@babel/cli": "^7.12.10",
     "@babel/core": "^7.12.10",
@@ -52,7 +57,7 @@
   },
   "types": "./types/index.d.ts",
   "cordova": {
-    "id": "@havesource/cordova-plugin-push",
+    "id": "@moodlehq/phonegap-plugin-push",
     "platforms": [
       "ios",
       "android",
