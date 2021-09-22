@@ -764,11 +764,17 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
       }
 
       // Create the sender person.
-      Bitmap senderBitmap = getCircleBitmap(getBitmapFromURL(extras.getString(SENDER_IMAGE, "")));
-      Person sender = new Person.Builder()
-        .setName(extras.getString(SENDER, ""))
-        .setIcon(IconCompat.createWithBitmap(senderBitmap))
-        .build();
+      String senderImageUrl = extras.getString(SENDER_IMAGE);
+      Bitmap senderBitmap = null;
+      if (senderImageUrl != null) {
+        senderBitmap = getCircleBitmap(getBitmapFromURL(senderImageUrl));
+      }
+
+      Person.Builder builder = new Person.Builder().setName(extras.getString(SENDER, ""));
+      if (senderBitmap != null) {
+        builder = builder.setIcon(IconCompat.createWithBitmap(senderBitmap));
+      }
+      Person sender = builder.build();
 
       // Add the new message to the style.
       msgStyle.addMessage(message, System.currentTimeMillis(), sender);
