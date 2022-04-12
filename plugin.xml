@@ -31,7 +31,9 @@
       <uses-permission android:name="android.permission.WAKE_LOCK"/>
       <uses-permission android:name="android.permission.VIBRATE"/>
       <uses-permission android:name="${applicationId}.permission.PushHandlerActivity"/>
+      <uses-permission android:name="${applicationId}.permission.BackgroundHandlerActivity"/>
       <permission android:name="${applicationId}.permission.PushHandlerActivity" android:protectionLevel="signature"></permission>
+      <permission android:name="${applicationId}.permission.BackgroundHandlerActivity" android:protectionLevel="signature"></permission>
     </config-file>
 
     <config-file target="AndroidManifest.xml" parent="/manifest/application">
