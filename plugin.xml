@@ -55,12 +55,6 @@
           <action android:name="com.google.firebase.MESSAGING_EVENT"/>
         </intent-filter>
       </service>
-
-      <service android:name="com.adobe.phonegap.push.PushInstanceIDListenerService" android:exported="true">
-        <intent-filter>
-          <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
-        </intent-filter>
-      </service>
     </config-file>
 
     <config-file target="config.xml" parent="/*">
@@ -73,7 +67,7 @@
     </config-file>
 
     <preference name="ANDROIDX_CORE_VERSION" default="1.6.+"/>
-    <preference name="FCM_VERSION" default="18.+"/>
+    <preference name="FCM_VERSION" default="23.+"/>
 
     <framework src="androidx.core:core:$ANDROIDX_CORE_VERSION" />
     <framework src="me.leolin:ShortcutBadger:1.1.22@aar"/>
@@ -83,7 +77,6 @@
     <source-file src="src/android/com/adobe/phonegap/push/PushConstants.kt" target-dir="java/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushHandlerActivity.kt" target-dir="java/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/BackgroundHandlerActivity.kt" target-dir="java/com/adobe/phonegap/push/"/>
-    <source-file src="src/android/com/adobe/phonegap/push/PushInstanceIDListenerService.kt" target-dir="java/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushPlugin.kt" target-dir="java/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/BackgroundActionButtonHandler.kt" target-dir="java/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushDismissedHandler.kt" target-dir="java/com/adobe/phonegap/push/"/>
