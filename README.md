@@ -18,15 +18,16 @@ We created this fork because we needed to include the following modifications in
 | - | Support Android X |
 | - | Support sender image |
 | - | Claim BackgroundHandlerActivity permissions |
+| - | Add android:exported to services |
 
 This fork is based of `v2.0.0` and it also includes some commits that hadn't been released yet.
 
-You can see all the changes here: [2.0.0...moodlemobile:v2.0.0-moodle.4](https://github.com/havesource/cordova-plugin-push/compare/2.0.0...moodlemobile:v2.0.0-moodle.4)
+You can see all the changes here: [2.0.0...moodlemobile:v2.0.0-moodle.5](https://github.com/havesource/cordova-plugin-push/compare/2.0.0...moodlemobile:v2.0.0-moodle.5)
 
 ## Installation
 
 You can install this package using the [original installation instructions](https://github.com/havesource/cordova-plugin-push/blob/master/docs/INSTALLATION.md), but installing this package instead:
 
 ```sh
-cordova plugin add @moodlehq/phonegap-plugin-push@2.0.0-moodle.4
+cordova plugin add @moodlehq/phonegap-plugin-push@2.0.0-moodle.5
 ```
