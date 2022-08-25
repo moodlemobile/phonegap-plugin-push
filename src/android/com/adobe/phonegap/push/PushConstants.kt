@@ -38,6 +38,7 @@ object PushConstants {
   const val MESSAGE: String = "message"
   const val BODY: String = "body"
   const val SENDER: String = "sender"
+  const val SENDER_IMAGE: String = "senderImage"
   const val SOUNDNAME: String = "soundname"
   const val COLOR: String = "color"
   const val LED_COLOR: String = "ledColor"

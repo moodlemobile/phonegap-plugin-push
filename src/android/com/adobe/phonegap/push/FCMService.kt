@@ -18,6 +18,8 @@ import android.text.Spanned
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.RemoteInput
+import androidx.core.app.Person
+import androidx.core.graphics.drawable.IconCompat
 import com.adobe.phonegap.push.PushPlugin.Companion.isActive
 import com.adobe.phonegap.push.PushPlugin.Companion.isInForeground
 import com.adobe.phonegap.push.PushPlugin.Companion.sendExtras
@@ -928,8 +930,23 @@ class FCMService : FirebaseMessagingService() {
             msgStyle = NotificationCompat.MessagingStyle("")
           }
 
+          // Create the sender person.
+          val senderImageUrl = it.getString(PushConstants.SENDER_IMAGE)
+          var senderIcon: IconCompat? = null
+          if (senderImageUrl != null) {
+            val senderBitmap = getCircleBitmap(getBitmapFromURL(senderImageUrl))
+            if (senderBitmap != null) {
+              senderIcon = IconCompat.createWithBitmap(senderBitmap)
+            }
+          }
+
+          val sender = Person.Builder()
+            .setName(it.getString(PushConstants.SENDER, ""))
+            .setIcon(senderIcon)
+            .build()
+
           // Add the new message to the style.
-          msgStyle.addMessage(message, System.currentTimeMillis(), it.getString(PushConstants.SENDER, ""))
+          msgStyle.addMessage(message, System.currentTimeMillis(), sender)
 
           // Add the count of messages to the title if there is more than 1.
           val sizeList = msgStyle.getMessages().size
