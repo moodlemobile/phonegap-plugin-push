@@ -847,6 +847,7 @@ class FCMService : FirebaseMessagingService() {
   ) {
     extras?.let {
       val message = it.getString(PushConstants.MESSAGE)
+      val order = it.getString(PushConstants.INBOX_ORDER, PushConstants.ORDER_DESC)
 
       when (it.getString(PushConstants.STYLE, PushConstants.STYLE_TEXT)) {
         PushConstants.STYLE_INBOX -> {
@@ -868,8 +869,15 @@ class FCMService : FirebaseMessagingService() {
                 setBigContentTitle(fromHtml(it.getString(PushConstants.TITLE)))
                 setSummaryText(fromHtml(stacking))
               }.also { inbox ->
-                for (i in messageList.indices.reversed()) {
-                  inbox.addLine(fromHtml(messageList[i]))
+                if (order == PushConstants.ORDER_ASC) {
+                  // Display last 4 messages.
+                  for (i in maxOf(0, messageList.size - 4) until messageList.size) {
+                    inbox.addLine(fromHtml(messageList[i]))
+                  }
+                } else {
+                  for (i in messageList.indices.reversed()) {
+                    inbox.addLine(fromHtml(messageList[i]))
+                  }
                 }
               }
 
