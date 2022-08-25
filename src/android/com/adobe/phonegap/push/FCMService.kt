@@ -910,6 +910,49 @@ class FCMService : FirebaseMessagingService() {
           }
         }
 
+        PushConstants.STYLE_MESSAGING -> {
+          var title = it.getString(PushConstants.TITLE)
+
+          // Find if there is a notification already displayed with this ID.
+          val notification = findActiveNotification(notId)
+
+          var msgStyle = if (notification != null) {
+            // Notification already displayed. Extract the MessagingStyle to add the message.
+            NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(notification)
+          } else {
+            null
+          }
+
+          if (msgStyle == null) {
+            // There is no notification or couldn't retrieve style, create a new style.
+            msgStyle = NotificationCompat.MessagingStyle("")
+          }
+
+          // Add the new message to the style.
+          msgStyle.addMessage(message, System.currentTimeMillis(), it.getString(PushConstants.SENDER, ""))
+
+          // Add the count of messages to the title if there is more than 1.
+          val sizeList = msgStyle.getMessages().size
+
+          if (sizeList > 1) {
+            var stacking = "($sizeList)" // Default value.
+            val summaryText = it.getString(PushConstants.SUMMARY_TEXT)
+
+            if (summaryText != null) {
+              stacking = summaryText.replace("%n%", "$sizeList")
+            }
+
+            if (stacking.trim() != "") {
+              title += " $stacking"
+            }
+          }
+
+          msgStyle.setConversationTitle(title)
+
+          // Use the style.
+          mBuilder.setStyle(msgStyle)
+        }
+
         else -> {
           setNotification(notId, "")
 
@@ -929,6 +972,23 @@ class FCMService : FirebaseMessagingService() {
         }
       }
     }
+  }
+
+  private fun findActiveNotification(notId: Int): Notification? {
+    // The getActiveNotifications method is only available from Android M.
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      val mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+      val notifications = mNotificationManager.getActiveNotifications()
+
+      // Find the notification.
+      for (i in notifications.indices) {
+        if (notifications[i].getId() == notId) {
+          return notifications[i].getNotification()
+        }
+      }
+    }
+
+    return null
   }
 
   private fun setNotificationSound(extras: Bundle?, mBuilder: NotificationCompat.Builder) {
