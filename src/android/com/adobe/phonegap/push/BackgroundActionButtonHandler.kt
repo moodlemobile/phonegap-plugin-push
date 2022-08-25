@@ -30,6 +30,10 @@ class BackgroundActionButtonHandler : BroadcastReceiver() {
       context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     notificationManager.cancel(FCMService.getAppName(context), notId)
 
+    // Clear list of messages when an action button is clicked.
+    val fcm = FCMService()
+    fcm.setNotification(notId, "")
+
     intent.extras?.let { extras ->
       Log.d(TAG, "Intent Extras: $extras")
       extras.getBundle(PushConstants.PUSH_BUNDLE)?.apply {
