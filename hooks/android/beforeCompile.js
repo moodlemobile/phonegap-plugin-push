@@ -29,7 +29,7 @@ function isExecutable () {
 }
 
 function getPluginKotlinVersion (context) {
-  const pluginConfig = new ParseElementtreeSync(join(context.opts.projectRoot, 'plugins/@havesource/cordova-plugin-push/plugin.xml'));
+  const pluginConfig = new ParseElementtreeSync(join(context.opts.projectRoot, 'plugins/@moodlehq/phonegap-plugin-push/plugin.xml'));
 
   return pluginConfig
     .findall('./platform[@name="android"]').pop()
