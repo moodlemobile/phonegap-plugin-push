@@ -1093,30 +1093,29 @@ class FCMService : FirebaseMessagingService() {
     }
 
     val output = Bitmap.createBitmap(
-      bitmap.width,
-      bitmap.height,
+      bitmap.getWidth(),
+      bitmap.getHeight(),
       Bitmap.Config.ARGB_8888
     )
 
-    val paint = Paint().apply {
-      isAntiAlias = true
-      color = Color.RED
-      xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-    }
+    val canvas = Canvas(output)
+    val color = Color.RED
+    val paint = Paint()
+    val rect = Rect(0, 0, bitmap.getWidth(), bitmap.getHeight())
 
-    Canvas(output).apply {
-      drawARGB(0, 0, 0, 0)
+    paint.setAntiAlias(true)
+    canvas.drawARGB(0, 0, 0, 0)
+    paint.setColor(color)
+    val cx = (bitmap.getWidth() / 2).toFloat()
+    val cy = (bitmap.getHeight() / 2).toFloat()
+    val radius = if (cx < cy) cx else cy
+    canvas.drawCircle(cx, cy, radius, paint)
 
-      val cx = (bitmap.width / 2).toFloat()
-      val cy = (bitmap.height / 2).toFloat()
-      val radius = if (cx < cy) cx else cy
-      val rect = Rect(0, 0, bitmap.width, bitmap.height)
-
-      drawCircle(cx, cy, radius, paint)
-      drawBitmap(bitmap, rect, rect, paint)
-    }
+    paint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC_IN))
+    canvas.drawBitmap(bitmap, rect, rect, paint)
 
     bitmap.recycle()
+
     return output
   }
 
