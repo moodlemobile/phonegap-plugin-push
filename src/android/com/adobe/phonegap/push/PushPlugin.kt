@@ -476,6 +476,9 @@ class PushPlugin : CordovaPlugin() {
         } catch (e: InterruptedException) {
           Log.e(TAG, formatLogMessage("Firebase Token Exception ${e.message}"))
           null
+        } catch (e: IllegalArgumentException) {
+          Log.e(TAG, formatLogMessage("Firebase Token Exception ${e.message}"))
+          null
         }
 
         if (token != "") {
