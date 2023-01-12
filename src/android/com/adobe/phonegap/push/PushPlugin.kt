@@ -213,6 +213,9 @@ class PushPlugin : CordovaPlugin() {
   private val appName: String
     get() = activity.packageManager.getApplicationLabel(activity.applicationInfo) as String
 
+  private val encHandler: EncryptionHandler
+    get() = EncryptionHandler()
+
   @TargetApi(26)
   @Throws(JSONException::class)
   private fun listChannels(): JSONArray {
@@ -420,6 +423,7 @@ class PushPlugin : CordovaPlugin() {
       PushConstants.DELETE_CHANNEL -> executeActionDeleteChannel(data, callbackContext)
       PushConstants.LIST_CHANNELS -> executeActionListChannels(callbackContext)
       PushConstants.CLEAR_NOTIFICATION -> executeActionClearNotification(data, callbackContext)
+      PushConstants.GET_PUBLIC_KEY -> executeActionGetPublicKey(callbackContext)
       else -> {
         Log.e(TAG, "Execute: Invalid Action $action")
         callbackContext.sendPluginResult(PluginResult(PluginResult.Status.INVALID_ACTION))
@@ -786,6 +790,17 @@ class PushPlugin : CordovaPlugin() {
         Log.v(TAG, "Execute::ClearNotification notificationId=$notificationId")
         clearNotification(notificationId)
         callbackContext.success()
+      } catch (e: JSONException) {
+        callbackContext.error(e.message)
+      }
+    }
+  }
+
+  private fun executeActionGetPublicKey(callbackContext: CallbackContext) {
+    cordova.threadPool.execute {
+      try {
+        Log.v(TAG, "Execute::GetPublicKey")
+        callbackContext.success(encHandler.getPublicKey(applicationContext))
       } catch (e: JSONException) {
         callbackContext.error(e.message)
       }

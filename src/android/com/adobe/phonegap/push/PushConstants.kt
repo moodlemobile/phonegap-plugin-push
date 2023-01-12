@@ -116,4 +116,5 @@ object PushConstants {
   const val INBOX_ORDER: String = "inbox-order"
   const val ORDER_ASC: String = "asc"
   const val ORDER_DESC: String = "desc"
+  const val GET_PUBLIC_KEY: String = "getPublicKey"
 }

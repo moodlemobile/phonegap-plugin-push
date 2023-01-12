@@ -28,6 +28,7 @@
 
 #import "PushPlugin.h"
 #import "AppDelegate+notification.h"
+#import "EncryptionHandler.h"
 
 @import Firebase;
 @import FirebaseCore;
@@ -474,6 +475,37 @@
             [additionalData setObject:[NSNumber numberWithBool:NO] forKey:@"coldstart"];
         }
 
+        // Special notification handling due to encrypted notifications being sent as data not a notification.
+        if ([notificationMessage objectForKey:@"encrypted"] != nil) {
+            bool isEncrypted = [[notificationMessage objectForKey:@"encrypted"] boolValue];
+            if (isEncrypted) {
+                NSArray *fields = @[@"userfromfullname", @"userfromid", @"sitefullname", @"smallmessage",
+                    @"fullmessage", @"fullmessagehtml", @"subject", @"contexturl"];
+                for (id key in fields) {
+                    if ([additionalData objectForKey:key] != nil) {
+                        [additionalData setObject:[EncryptionHandler decrypt:[additionalData objectForKey:key]] forKey:key];
+                    }
+                }
+
+                UIApplicationState state = [[UIApplication sharedApplication] applicationState];
+                if (state != UIApplicationStateActive) {
+                    // Create notification with decrypted payload for when app is not in the foreground.
+                    UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
+                    content.title = [additionalData objectForKey:@"sitefullname"];
+                    content.body = [additionalData objectForKey:@"smallmessage"];
+                    content.sound = [UNNotificationSound defaultSound];
+                    content.userInfo = additionalData;
+                    UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:@"notification" content:content trigger:nil];
+                    [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request withCompletionHandler:nil];
+                } else {
+                    // App is active, set in foreground so notification is created.
+                    [additionalData setObject:[NSNumber numberWithBool:YES] forKey:@"foreground"];
+                }
+                [message setObject:[additionalData objectForKey:@"smallmessage"] forKey:@"message"];
+                [message setObject:[additionalData objectForKey:@"sitefullname"] forKey:@"title"];
+            }
+        }
+
         [message setObject:additionalData forKey:@"additionalData"];
 
         // send notification message
@@ -484,6 +516,13 @@
         self.coldstart = NO;
         self.notificationMessage = nil;
     }
+}
+
+- (void)getPublicKey:(CDVInvokedUrlCommand *)command
+{
+    CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:
+                                      [EncryptionHandler getPublicKey]];
+    [self.commandDelegate sendPluginResult:commandResult callbackId:command.callbackId];
 }
 
 - (void)clearNotification:(CDVInvokedUrlCommand *)command

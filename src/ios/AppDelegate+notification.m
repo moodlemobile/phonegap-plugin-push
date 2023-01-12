@@ -105,9 +105,13 @@ NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginA
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     NSLog(@"didReceiveNotification with fetchCompletionHandler");
 
-    // app is in the background or inactive, so only call notification callback if this is a silent push
-    if (application.applicationState != UIApplicationStateActive) {
+    bool isEncrypted = false;
+    if ([userInfo objectForKey:@"encrypted"] != nil) {
+        isEncrypted = [[userInfo objectForKey:@"encrypted"] boolValue];
+    }
 
+    // app is in the background or inactive, so only call notification callback if this is a silent push
+    if (application.applicationState != UIApplicationStateActive || isEncrypted) {
         NSLog(@"app in-active");
 
         // do some convoluted logic to find out if this should be a silent push.

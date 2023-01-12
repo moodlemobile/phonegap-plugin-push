@@ -26,6 +26,8 @@ import com.adobe.phonegap.push.PushPlugin.Companion.sendExtras
 import com.adobe.phonegap.push.PushPlugin.Companion.setApplicationIconBadgeNumber
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.goterl.lazysodium.LazySodiumAndroid
+import com.goterl.lazysodium.SodiumAndroid
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -119,6 +121,8 @@ class FCMService : FirebaseMessagingService() {
 
     var extras = Bundle()
 
+    val isEncrypted = message.data.containsKey("encrypted") && message.data["encrypted"] == "1"
+
     message.notification?.let {
       extras.putString(PushConstants.TITLE, it.title)
       extras.putString(PushConstants.MESSAGE, it.body)
@@ -127,8 +131,25 @@ class FCMService : FirebaseMessagingService() {
       extras.putString(PushConstants.COLOR, it.color)
     }
 
+    val fields = arrayOf("userfromfullname", "userfromid", "sitefullname", "smallmessage",
+      "fullmessage", "fullmessagehtml", "subject", "contexturl", "title", "body")
+
     for ((key, value) in message.data) {
-      extras.putString(key, value)
+      var messageValue = value
+      if (fields.contains(key) && isEncrypted) {
+        messageValue = EncryptionHandler.decrypt(context, messageValue)
+      }
+
+      extras.putString(key, messageValue)
+    }
+
+    // It's possible these fields will be empty when using encrypted notifications,
+    // as the notification is sent as a data payload not an alert.
+    if (!extras.containsKey(PushConstants.TITLE)) {
+      extras.putString(PushConstants.TITLE, extras.getString("sitefullname"))
+    }
+    if (!extras.containsKey(PushConstants.MESSAGE)) {
+      extras.putString(PushConstants.MESSAGE, extras.getString("smallmessage"))
     }
 
     if (isAvailableSender(from)) {
@@ -244,12 +265,12 @@ class FCMService : FirebaseMessagingService() {
      */
     return when {
       key == PushConstants.BODY
-        || key == PushConstants.ALERT
-        || key == PushConstants.MP_MESSAGE
-        || key == PushConstants.GCM_NOTIFICATION_BODY
-        || key == PushConstants.TWILIO_BODY
-        || key == messageKey
-        || key == PushConstants.AWS_PINPOINT_BODY
+              || key == PushConstants.ALERT
+              || key == PushConstants.MP_MESSAGE
+              || key == PushConstants.GCM_NOTIFICATION_BODY
+              || key == PushConstants.TWILIO_BODY
+              || key == messageKey
+              || key == PushConstants.AWS_PINPOINT_BODY
       -> {
         PushConstants.MESSAGE
       }

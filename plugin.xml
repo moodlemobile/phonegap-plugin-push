@@ -72,6 +72,8 @@
     <framework src="androidx.core:core:$ANDROIDX_CORE_VERSION" />
     <framework src="me.leolin:ShortcutBadger:1.1.22@aar"/>
     <framework src="com.google.firebase:firebase-messaging:$FCM_VERSION"/>
+    <framework src="com.goterl:lazysodium-android:5.1.0@aar"/>
+    <framework src="net.java.dev.jna:jna:5.8.0@aar"/>
 
     <source-file src="src/android/com/adobe/phonegap/push/FCMService.kt" target-dir="java/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushConstants.kt" target-dir="java/com/adobe/phonegap/push/"/>
@@ -80,6 +82,7 @@
     <source-file src="src/android/com/adobe/phonegap/push/PushPlugin.kt" target-dir="java/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/BackgroundActionButtonHandler.kt" target-dir="java/com/adobe/phonegap/push/"/>
     <source-file src="src/android/com/adobe/phonegap/push/PushDismissedHandler.kt" target-dir="java/com/adobe/phonegap/push/"/>
+    <source-file src="src/android/com/adobe/phonegap/push/EncryptionHandler.kt" target-dir="java/com/adobe/phonegap/push/"/>
   </platform>
 
   <platform name="browser">
@@ -118,8 +121,10 @@
 
     <source-file src="src/ios/AppDelegate+notification.m"/>
     <source-file src="src/ios/PushPlugin.m"/>
+    <source-file src="src/ios/EncryptionHandler.m"/>
     <header-file src="src/ios/AppDelegate+notification.h"/>
     <header-file src="src/ios/PushPlugin.h"/>
+    <header-file src="src/ios/EncryptionHandler.h"/>
 
     <framework src="PushKit.framework"/>
 
@@ -129,6 +134,7 @@
       </config>
       <pods use-frameworks="true">
         <pod name="Firebase/Messaging" spec="$IOS_FIREBASE_MESSAGING_VERSION" />
+        <pod name="Sodium" git="https://github.com/jedisct1/swift-sodium.git" commit="f67e6e0" />
       </pods>
     </podspec>
   </platform>
