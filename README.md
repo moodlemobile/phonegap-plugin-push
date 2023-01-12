@@ -20,6 +20,7 @@ We created this fork because we needed to include the following modifications in
 | - | Claim BackgroundHandlerActivity permissions |
 | - | Add android:exported to services |
 | - | Fix crash if no valid configuration provided |
+| - | Support encrypted push notifications |
 
 This fork is based of `v4.0.0` and it also includes some commits that hadn't been released yet.
 

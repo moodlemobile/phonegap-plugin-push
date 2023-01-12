@@ -377,6 +377,8 @@ declare namespace PhonegapPluginPush {
 		 * @param errorCallback Is called when the api fails to retrieve the list of channels.
 		 */
 		listChannels(successCallback: (channels: Channel[]) => void, errorCallback: () => void): void;
+
+		getPublicKey(successCallback: (publicKey: string) => void, errorCallback: () => void): void;
 	}
 }
 
