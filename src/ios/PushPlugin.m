@@ -501,8 +501,18 @@
                     // App is active, set in foreground so notification is created.
                     [additionalData setObject:[NSNumber numberWithBool:YES] forKey:@"foreground"];
                 }
-                [message setObject:[additionalData objectForKey:@"smallmessage"] forKey:@"message"];
-                [message setObject:[additionalData objectForKey:@"sitefullname"] forKey:@"title"];
+
+                if ([message objectForKey:@"title"] != nil) {
+                    [message setObject:[EncryptionHandler decrypt:[message objectForKey:@"title"]] forKey:@"title"];
+                } else if ([additionalData objectForKey:@"sitefullname"] != nil) {
+                    [message setObject:[additionalData objectForKey:@"sitefullname"] forKey:@"title"];
+                }
+
+                if ([message objectForKey:@"message"] != nil) {
+                    [message setObject:[EncryptionHandler decrypt:[message objectForKey:@"message"]] forKey:@"message"];
+                } else if ([additionalData objectForKey:@"smallmessage"] != nil) {
+                    [message setObject:[additionalData objectForKey:@"smallmessage"] forKey:@"message"];
+                }
             }
         }
 
