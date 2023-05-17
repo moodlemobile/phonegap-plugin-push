@@ -131,8 +131,8 @@ class FCMService : FirebaseMessagingService() {
       extras.putString(PushConstants.COLOR, it.color)
     }
 
-    val fields = arrayOf("userfromfullname", "userfromid", "sitefullname", "smallmessage",
-      "fullmessage", "fullmessagehtml", "subject", "contexturl", "title", "body")
+    val fields = arrayOf("userfromfullname", "userfromid", "sitefullname", "smallmessage", "sender",
+      "fullmessage", "fullmessagehtml", "subject", "contexturl", PushConstants.TITLE, PushConstants.MESSAGE, PushConstants.BODY)
 
     for ((key, value) in message.data) {
       var messageValue = value
@@ -149,7 +149,11 @@ class FCMService : FirebaseMessagingService() {
       extras.putString(PushConstants.TITLE, extras.getString("sitefullname"))
     }
     if (!extras.containsKey(PushConstants.MESSAGE)) {
-      extras.putString(PushConstants.MESSAGE, extras.getString("smallmessage"))
+      if (extras.containsKey(PushConstants.BODY)) {
+        extras.putString(PushConstants.MESSAGE, extras.getString(PushConstants.BODY))
+      } else {
+        extras.putString(PushConstants.MESSAGE, extras.getString("smallmessage"))
+      }
     }
 
     if (isAvailableSender(from)) {
