@@ -480,19 +480,37 @@
             bool isEncrypted = [[notificationMessage objectForKey:@"encrypted"] boolValue];
             if (isEncrypted) {
                 NSArray *fields = @[@"userfromfullname", @"userfromid", @"sitefullname", @"smallmessage",
-                    @"fullmessage", @"fullmessagehtml", @"subject", @"contexturl"];
+                    @"fullmessage", @"fullmessagehtml", @"subject", @"contexturl", @"title", @"body"];
                 for (id key in fields) {
                     if ([additionalData objectForKey:key] != nil) {
                         [additionalData setObject:[EncryptionHandler decrypt:[additionalData objectForKey:key]] forKey:key];
                     }
                 }
 
+                if ([message objectForKey:@"title"] != nil) {
+                    [message setObject:[EncryptionHandler decrypt:[message objectForKey:@"title"]] forKey:@"title"];
+                } else if ([additionalData objectForKey:@"title"] != nil) {
+                    [message setObject:[additionalData objectForKey:@"title"] forKey:@"title"];
+                } else if ([additionalData objectForKey:@"subject"] != nil) {
+                    [message setObject:[additionalData objectForKey:@"subject"] forKey:@"title"];
+                } else if ([additionalData objectForKey:@"sitefullname"] != nil) {
+                    [message setObject:[additionalData objectForKey:@"sitefullname"] forKey:@"title"];
+                }
+
+                if ([message objectForKey:@"message"] != nil) {
+                    [message setObject:[EncryptionHandler decrypt:[message objectForKey:@"message"]] forKey:@"message"];
+                } else if ([additionalData objectForKey:@"body"] != nil) {
+                    [message setObject:[additionalData objectForKey:@"body"] forKey:@"message"];
+                } else if ([additionalData objectForKey:@"smallmessage"] != nil) {
+                    [message setObject:[additionalData objectForKey:@"smallmessage"] forKey:@"message"];
+                }
+
                 UIApplicationState state = [[UIApplication sharedApplication] applicationState];
                 if (state != UIApplicationStateActive) {
                     // Create notification with decrypted payload for when app is not in the foreground.
                     UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
-                    content.title = [additionalData objectForKey:@"sitefullname"];
-                    content.body = [additionalData objectForKey:@"smallmessage"];
+                    content.title = [message objectForKey:@"title"];
+                    content.body = [message objectForKey:@"message"];
                     content.sound = [UNNotificationSound defaultSound];
                     content.userInfo = additionalData;
                     UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:@"notification" content:content trigger:nil];
@@ -506,18 +524,6 @@
                 } else {
                     // App is active, set in foreground so notification is created.
                     [additionalData setObject:[NSNumber numberWithBool:YES] forKey:@"foreground"];
-                }
-
-                if ([message objectForKey:@"title"] != nil) {
-                    [message setObject:[EncryptionHandler decrypt:[message objectForKey:@"title"]] forKey:@"title"];
-                } else if ([additionalData objectForKey:@"sitefullname"] != nil) {
-                    [message setObject:[additionalData objectForKey:@"sitefullname"] forKey:@"title"];
-                }
-
-                if ([message objectForKey:@"message"] != nil) {
-                    [message setObject:[EncryptionHandler decrypt:[message objectForKey:@"message"]] forKey:@"message"];
-                } else if ([additionalData objectForKey:@"smallmessage"] != nil) {
-                    [message setObject:[additionalData objectForKey:@"smallmessage"] forKey:@"message"];
                 }
             }
         }
