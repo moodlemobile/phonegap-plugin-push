@@ -497,6 +497,12 @@
                     content.userInfo = additionalData;
                     UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:@"notification" content:content trigger:nil];
                     [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request withCompletionHandler:nil];
+
+                    // Notification shown, don't call the plugin callback to be consistent with what
+                    // happens when the notification is not encrypted and app is in background.
+                    self.coldstart = NO;
+                    self.notificationMessage = nil;
+                    return;
                 } else {
                     // App is active, set in foreground so notification is created.
                     [additionalData setObject:[NSNumber numberWithBool:YES] forKey:@"foreground"];
