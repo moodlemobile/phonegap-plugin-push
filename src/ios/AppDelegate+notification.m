@@ -240,11 +240,11 @@ NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginA
     [self.clobberedDelegate userNotificationCenter:center
                            willPresentNotification:notification
                              withCompletionHandler:completionHandler];
-    
+
     if (![notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
         return;
     }
-    
+
     NSLog( @"NotificationCenter Handle push from foreground" );
     // custom code to handle push while app is in the foreground
     PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
@@ -262,11 +262,13 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
     [self.clobberedDelegate userNotificationCenter:center
                     didReceiveNotificationResponse:response
                              withCompletionHandler:completionHandler];
-    
-    if (![response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
+    bool isSilentEncryptedTriggeredByPlugin = [[response.notification.request.content.userInfo
+        objectForKey:@"silentencryptedtriggeredbyplugin"] boolValue];
+
+    if (![response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]] && !isSilentEncryptedTriggeredByPlugin) {
         return;
     }
-    
+
     NSLog(@"Push Plugin didReceiveNotificationResponse: actionIdentifier %@, notification: %@", response.actionIdentifier,
           response.notification.request.content.userInfo);
     NSMutableDictionary *userInfo = [response.notification.request.content.userInfo mutableCopy];

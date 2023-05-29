@@ -478,7 +478,9 @@
         // Special notification handling due to encrypted notifications being sent as data not a notification.
         if ([notificationMessage objectForKey:@"encrypted"] != nil) {
             bool isEncrypted = [[notificationMessage objectForKey:@"encrypted"] boolValue];
-            if (isEncrypted) {
+            bool isSilentEncryptedTriggeredByPlugin = [[notificationMessage
+                objectForKey:@"silentencryptedtriggeredbyplugin"] boolValue];
+            if (isEncrypted && !isSilentEncryptedTriggeredByPlugin) {
                 NSArray *fields = @[@"userfromfullname", @"userfromid", @"sitefullname", @"smallmessage",
                     @"fullmessage", @"fullmessagehtml", @"subject", @"contexturl", @"title", @"body"];
                 for (id key in fields) {
@@ -508,6 +510,7 @@
                 UIApplicationState state = [[UIApplication sharedApplication] applicationState];
                 if (state != UIApplicationStateActive) {
                     // Create notification with decrypted payload for when app is not in the foreground.
+                    [additionalData setObject:[NSNumber numberWithBool:YES] forKey:@"silentencryptedtriggeredbyplugin"];
                     UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
                     content.title = [message objectForKey:@"title"];
                     content.body = [message objectForKey:@"message"];
