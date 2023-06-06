@@ -76,7 +76,9 @@ class EncryptionHandler {
          * Encrypt sodium key using RSA key from keystore.
          */
         private fun encryptKey(key: Key): String? {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                // Libsodium doesn't work in Android older than 8 because lazysodium-android uses java.util.Base64.
+                // It should be fixed in lazysodium-android 5.1.1 version, then this should be changed to VERSION_CODES.M.
                 return null
             }
 
@@ -122,7 +124,9 @@ class EncryptionHandler {
      * Creates the key pair if it doesn't exist.
      */
     fun getPublicKey(context: Context): String? {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            // Libsodium doesn't work in Android older than 8 because lazysodium-android uses java.util.Base64.
+            // It should be fixed in lazysodium-android 5.1.1 version, then this should be changed to VERSION_CODES.M.
             return null
         }
 
