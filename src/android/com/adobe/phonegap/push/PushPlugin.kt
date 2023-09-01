@@ -213,9 +213,6 @@ class PushPlugin : CordovaPlugin() {
   private val appName: String
     get() = activity.packageManager.getApplicationLabel(activity.applicationInfo) as String
 
-  private val encHandler: EncryptionHandler
-    get() = EncryptionHandler()
-
   @TargetApi(26)
   @Throws(JSONException::class)
   private fun listChannels(): JSONArray {
@@ -800,7 +797,7 @@ class PushPlugin : CordovaPlugin() {
     cordova.threadPool.execute {
       try {
         Log.v(TAG, "Execute::GetPublicKey")
-        callbackContext.success(encHandler.getPublicKey(applicationContext))
+        callbackContext.success(EncryptionHandler.getPublicKey(applicationContext))
       } catch (e: JSONException) {
         callbackContext.error(e.message)
       }

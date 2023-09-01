@@ -31,10 +31,20 @@ class EncryptionHandler {
             OAEPParameterSpec.DEFAULT.pSource
         )
 
+        fun encryptionSupported(): Boolean {
+            // Libsodium doesn't work in Android older than 8 because lazysodium-android uses java.util.Base64.
+            // It should be fixed in lazysodium-android 5.1.1 version, then this should be changed to VERSION_CODES.M.
+            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+        }
+
         /**
          * Decrypt base64 encoded ciphertext using sodium private key.
          */
         fun decrypt(context: Context, base64EncodedText: String): String {
+            if (!encryptionSupported()) {
+                return base64EncodedText
+            }
+
             try {
                 // Try decode text now to check if it is encoded.
                 // If it fails the string was not encoded and likely replaced with a language string
@@ -52,6 +62,20 @@ class EncryptionHandler {
             val keyPair = com.goterl.lazysodium.utils.KeyPair(publicKey, privateKey)
 
             return lazySodium.cryptoBoxSealOpenEasy(base64EncodedText, keyPair);
+        }
+
+        /**
+         * Encrypt a text using sodium public key.
+         */
+        fun encrypt(context: Context, text: String): String {
+            if (!encryptionSupported()) {
+                return text
+            }
+
+            val lazySodium = LazySodiumAndroid(SodiumAndroid(), Charsets.UTF_8, Base64MessageEncoder())
+            val publicKey = getPublicKey(context)
+
+            return lazySodium.cryptoBoxSealEasy(text, Key.fromBase64String(publicKey));
         }
 
         /**
@@ -76,9 +100,7 @@ class EncryptionHandler {
          * Encrypt sodium key using RSA key from keystore.
          */
         private fun encryptKey(key: Key): String? {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                // Libsodium doesn't work in Android older than 8 because lazysodium-android uses java.util.Base64.
-                // It should be fixed in lazysodium-android 5.1.1 version, then this should be changed to VERSION_CODES.M.
+            if (!encryptionSupported()) {
                 return null
             }
 
@@ -117,31 +139,30 @@ class EncryptionHandler {
             val ciphertext = cipher.doFinal(key.asBytes)
             return String(Base64.encode(ciphertext, Base64.NO_WRAP), Charsets.UTF_8)
         }
-    }
 
-    /**
-     * Return sodium public key as a hex string.
-     * Creates the key pair if it doesn't exist.
-     */
-    fun getPublicKey(context: Context): String? {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            // Libsodium doesn't work in Android older than 8 because lazysodium-android uses java.util.Base64.
-            // It should be fixed in lazysodium-android 5.1.1 version, then this should be changed to VERSION_CODES.M.
-            return null
-        }
+        /**
+         * Return sodium public key as a hex string.
+         * Creates the key pair if it doesn't exist.
+         */
+        fun getPublicKey(context: Context): String? {
+            if (!encryptionSupported()) {
+                return null
+            }
 
-        val lazySodium = LazySodiumAndroid(SodiumAndroid())
-        val pref = context.getSharedPreferences(PushConstants.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE)
-        val base64PubKey = pref.getString(PUBLIC_KEY_PREF, null)
-        val keypair: com.goterl.lazysodium.utils.KeyPair
-        return if (base64PubKey == null) {
-            keypair = lazySodium.cryptoBoxKeypair()
-            pref.edit().putString(PRIVATE_KEY_PREF, encryptKey(keypair.secretKey)).apply()
-            val base64Key = String(Base64.encode(keypair.publicKey.asBytes, Base64.NO_WRAP))
-            pref.edit().putString(PUBLIC_KEY_PREF, base64Key).apply()
-            base64Key
-        } else {
-            base64PubKey
+            val lazySodium = LazySodiumAndroid(SodiumAndroid())
+            val pref = context.getSharedPreferences(PushConstants.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE)
+            val base64PubKey = pref.getString(PUBLIC_KEY_PREF, null)
+            val keypair: com.goterl.lazysodium.utils.KeyPair
+            return if (base64PubKey == null) {
+                keypair = lazySodium.cryptoBoxKeypair()
+                pref.edit().putString(PRIVATE_KEY_PREF, encryptKey(keypair.secretKey)).apply()
+                val base64Key = String(Base64.encode(keypair.publicKey.asBytes, Base64.NO_WRAP))
+                pref.edit().putString(PUBLIC_KEY_PREF, base64Key).apply()
+                base64Key
+            } else {
+                base64PubKey
+            }
         }
     }
+
 }
