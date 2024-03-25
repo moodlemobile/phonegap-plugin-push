@@ -97,7 +97,7 @@
   </platform>
 
   <platform name="ios">
-    <preference name="IOS_FIREBASE_MESSAGING_VERSION" default="~> 8.1.1"/>
+    <preference name="IOS_FIREBASE_MESSAGING_VERSION" default="~> 10.23.0"/>
 
     <config-file target="config.xml" parent="/*">
       <feature name="PushNotification">
