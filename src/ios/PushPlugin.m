@@ -381,6 +381,9 @@
 
         if(![weakSelf usesFCM]) {
             [weakSelf registerWithToken: token];
+        } else {
+            // Obtain the FCM token now that the APNS token is available, otherwise initRegistation fails.
+            [weakSelf initRegistration];
         }
     }];
 
