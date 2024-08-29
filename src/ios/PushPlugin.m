@@ -361,6 +361,11 @@
     }
     NSLog(@"Push Plugin register success: %@", deviceToken);
 
+    if ([self usesFCM]) {
+        // Obtain the FCM token now that the APNS token is available.
+        [self initRegistration];
+    }
+
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000
     // [deviceToken description] is like "{length = 32, bytes = 0xd3d997af 967d1f43 b405374a 13394d2f ... 28f10282 14af515f }"
     NSString *token = [self hexadecimalStringFromData:deviceToken];
@@ -381,9 +386,6 @@
 
         if(![weakSelf usesFCM]) {
             [weakSelf registerWithToken: token];
-        } else {
-            // Obtain the FCM token now that the APNS token is available, otherwise initRegistation fails.
-            [weakSelf initRegistration];
         }
     }];
 
