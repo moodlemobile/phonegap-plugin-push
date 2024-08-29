@@ -1,6 +1,6 @@
 {
   "name": "@moodlehq/phonegap-plugin-push",
-  "version": "4.0.0-moodle.9",
+  "version": "4.0.0-moodle.10",
   "description": "Moodle's fork of Cordova Push Plugin.",
   "scripts": {
     "build": "babel src/js --out-dir www",
