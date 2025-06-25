@@ -32,9 +32,7 @@ class EncryptionHandler {
         )
 
         fun encryptionSupported(): Boolean {
-            // Libsodium doesn't work in Android older than 8 because lazysodium-android uses java.util.Base64.
-            // It should be fixed in lazysodium-android 5.1.1 version, then this should be changed to VERSION_CODES.M.
-            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
         }
 
         /**

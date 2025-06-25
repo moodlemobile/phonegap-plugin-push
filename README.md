@@ -20,7 +20,7 @@ We created this fork because we needed to include the following modifications in
 | - | Claim BackgroundHandlerActivity permissions |
 | - | Add android:exported to services |
 | - | Fix crash if no valid configuration provided |
-| - | Support encrypted push notifications (Android 8+ and iOS 13+) |
+| - | Support encrypted push notifications (Android 6+ and iOS 13+) |
 | - | Update default version of Firebase for iOS |
 | - | Fix obtaining FCM token in iOS when using Firebase 10.23 |
 
