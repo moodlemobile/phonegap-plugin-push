@@ -30,6 +30,7 @@ class EncryptionHandler {
             MGF1ParameterSpec.SHA1,
             OAEPParameterSpec.DEFAULT.pSource
         )
+        private val lazySodium = LazySodiumAndroid(SodiumAndroid(), Charsets.UTF_8, Base64MessageEncoder())
 
         fun encryptionSupported(): Boolean {
             return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
@@ -52,7 +53,6 @@ class EncryptionHandler {
                 return base64EncodedText
             }
             // Retrieve keys from storage, reassemble keypair.
-            val lazySodium = LazySodiumAndroid(SodiumAndroid(), Charsets.UTF_8, Base64MessageEncoder())
             val pref = context.getSharedPreferences(PushConstants.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE)
             val b64PrivateKey = pref.getString(PRIVATE_KEY_PREF, null) ?: throw Exception()
             val publicKey = Key.fromBase64String(pref.getString(PUBLIC_KEY_PREF, null))
@@ -70,7 +70,6 @@ class EncryptionHandler {
                 return text
             }
 
-            val lazySodium = LazySodiumAndroid(SodiumAndroid(), Charsets.UTF_8, Base64MessageEncoder())
             val publicKey = getPublicKey(context)
 
             return lazySodium.cryptoBoxSealEasy(text, Key.fromBase64String(publicKey));
@@ -147,7 +146,6 @@ class EncryptionHandler {
                 return null
             }
 
-            val lazySodium = LazySodiumAndroid(SodiumAndroid())
             val pref = context.getSharedPreferences(PushConstants.COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE)
             val base64PubKey = pref.getString(PUBLIC_KEY_PREF, null)
             val keypair: com.goterl.lazysodium.utils.KeyPair
