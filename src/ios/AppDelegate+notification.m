@@ -33,7 +33,7 @@ NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginA
 
 @end
 
-@implementation AppDelegate (notification)
+@implementation CDVAppDelegate (notification)
 
 - (id) getCommandInstance:(NSString*)className
 {
@@ -71,7 +71,7 @@ NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginA
     });
 }
 
-- (AppDelegate *)pushPluginSwizzledInit
+- (CDVAppDelegate *)pushPluginSwizzledInit
 {
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
     self.clobberedDelegate = center.delegate;

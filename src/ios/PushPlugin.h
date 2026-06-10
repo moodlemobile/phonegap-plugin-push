@@ -25,8 +25,7 @@
 
 @import Foundation;
 @import UserNotifications;
-#import <Cordova/CDV.h>
-#import <Cordova/CDVPlugin.h>
+#import <Cordova/Cordova.h>
 #import <PushKit/PushKit.h>
 
 @protocol GGLInstanceIDDelegate;
